@@ -52,7 +52,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label_unity_from">
+          <object class="GtkLabel" id="label_unit_from">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="label" translatable="yes">Converter de:</property>
@@ -67,6 +67,7 @@
           <object class="GtkComboBox" id="combo_from">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <signal name="changed" handler="on_from_changed" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -75,7 +76,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label_unity_to">
+          <object class="GtkLabel" id="label_unit_to">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="label" translatable="yes">Converter para:</property>
@@ -90,6 +91,7 @@
           <object class="GtkComboBox" id="combo_to">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <signal name="changed" handler="on_to_changed" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -110,9 +112,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="entry">
+          <object class="GtkEntry" id="input">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <signal name="changed" handler="on_input_changed" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -133,7 +136,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry">
+          <object class="GtkEntry" id="output">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="editable">False</property>
@@ -142,20 +145,6 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">10</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="button">
-            <property name="label" translatable="yes">Hello!</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <signal name="clicked" handler="on_button_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">11</property>
           </packing>
         </child>
       </object>
