@@ -8,17 +8,15 @@ from os.path import abspath, dirname, join
 class App:
 
     def __init__(self):
-        # Build GUI
+        # GUI
         self.builder = Gtk.Builder()
         self.builder.add_from_file('converter.glade')
 
-        # Get objects
+        # Get window object and set title
         self.window = self.builder.get_object('window')
         self.window.set_title('Conversor de unidades')
 
-        # Cria uma array de duas colunas, a primeira para ser uma espécie de
-        # identificador, ID, e a outra, o texto mostrado. Poderia ser uma
-        # coluna int e outra string, caso os Ids fossem numéricos.
+        # Quantities and units arrays
         self.quantities_list = Gtk.ListStore(int, str)
         self.volume_units_list = Gtk.ListStore(int, str)
         self.temperature_units_list = Gtk.ListStore(int, str)
