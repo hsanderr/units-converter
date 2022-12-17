@@ -1,3 +1,6 @@
+# Henrique Sander Lourenço
+# 10802705
+
 import gi
 
 gi.require_version("Gtk", "3.0")
@@ -5,10 +8,12 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from os.path import abspath, dirname, join
 
+# Create App class
 class App:
 
     def __init__(self):
-        # GUI
+
+        # Connect to glade file
         self.builder = Gtk.Builder()
         self.builder.add_from_file('converter.glade')
 
@@ -16,7 +21,7 @@ class App:
         self.window = self.builder.get_object('window')
         self.window.set_title('Conversor de unidades')
 
-        # Quantities and units arrays
+        # Create quantities and units lists in Gtk
         self.quantities_list = Gtk.ListStore(int, str)
         self.volume_units_list = Gtk.ListStore(int, str)
         self.temperature_units_list = Gtk.ListStore(int, str)
@@ -26,6 +31,7 @@ class App:
             [1, 'Volume'],
             [2, 'Temperatura']]
 
+        # Append quantities to Gtk list
         for qty in quantities:
             self.quantities_list.append(qty)
 
@@ -42,39 +48,39 @@ class App:
             [3, 'Kelvin']
         ]
 
+        # Append volume units to Gtk list
         for unit in volume_units:
             self.volume_units_list.append(unit)
 
+        # Append temperature units to Gtk list
         for unit in temperature_units:
             self.temperature_units_list.append(unit)
 
-        # Configuring comboboxes options
-        self.combo1 = self.builder.get_object('combo1')
-        self.combo_from = self.builder.get_object('combo_from')
-        self.combo_to = self.builder.get_object('combo_to')
-        self.combo1.set_model(self.quantities_list)
-        self.unit_from = self.builder.get_object('combo_from')
-        self.unit_to = self.builder.get_object('combo_to')
-        self.unit_from.set_model(self.volume_units_list)
-        self.unit_to.set_model(self.volume_units_list)
+        # Configure combo boxes
+        self.combo_qty = self.builder.get_object('combo_qty') # Quantities combo box
+        self.combo_from = self.builder.get_object('combo_from') # 'From units' combo box
+        self.combo_to = self.builder.get_object('combo_to') # 'To units' combo box
+        self.combo_qty.set_model(self.quantities_list) # Set quantities combo box model
+        self.combo_from.set_model(self.volume_units_list) # Set 'from units' combo box model
+        self.combo_to.set_model(self.volume_units_list) # Set 'to units' combo box model
 
-        # comboxes renderer
+        # Add combo boxes renderer
         renderer_text = Gtk.CellRendererText()
-        self.combo1.pack_start(renderer_text, True)
-        self.unit_from.pack_start(renderer_text, True)
-        self.unit_to.pack_start(renderer_text, True)
+        self.combo_qty.pack_start(renderer_text, True)
+        self.combo_from.pack_start(renderer_text, True)
+        self.combo_to.pack_start(renderer_text, True)
 
-        # Escolher qual coluna mostrar:
-        self.combo1.add_attribute(renderer_text, "text", 1)
-        self.unit_from.add_attribute(renderer_text, "text", 1)
-        self.unit_to.add_attribute(renderer_text, "text", 1)
+        # Choose what to show on combo boxes
+        self.combo_qty.add_attribute(renderer_text, "text", 1)
+        self.combo_from.add_attribute(renderer_text, "text", 1)
+        self.combo_to.add_attribute(renderer_text, "text", 1)
 
-        # Default option
-        self.combo1.set_active(0)
+        # Default options
+        self.combo_qty.set_active(0)
         self.combo_from.set_active(0)
         self.combo_to.set_active(0)
-        self.unitFrom = 1
-        self.unitTo = 1
+        self.unitFrom = 1 # Tell which unit the quantity is being converted from
+        self.unitTo = 1 # Tell which unit the quantity is being converted to
 
         # Connect signals
         self.builder.connect_signals(self)
@@ -82,54 +88,64 @@ class App:
         # Show window
         self.window.show()
 
-        self.quantity = 0 # quantity=0: volume, quantity=1: temperature
+        self.quantity = 0 # Tell which quantity is being converted (0 is volume and 1 is temperature)
 
         self.input = self.builder.get_object('input')
         self.out = self.builder.get_object('output')
 
+    # Close window button
     def on_window_destroy(self, widget):
-        '''Classical window close button.'''
         Gtk.main_quit()
 
-    def on_combo1_changed(self, widget):
-        '''Verify which option is selected'''
+    # Quantity being converted changed
+    def on_qty_changed(self, widget):
         model = widget.get_model()
         active = widget.get_active()
-        option = model[active][1]
+        option = model[active][1] # Get which quantity is selected
         self.input.set_text('')
-        self.combo_from.set_active(0)
-        self.combo_to.set_active(0)
-        print('Opção selecionada: {}'.format(option))
-        if active == 0:
-            self.unit_from.set_model(self.volume_units_list)
-            self.unit_to.set_model(self.volume_units_list)
+        # print('Opção selecionada: {}'.format(option)) # Debug only
+        if active == 0: # Volume selected
+            self.combo_from.set_model(self.volume_units_list)
+            self.combo_to.set_model(self.volume_units_list)
+            self.combo_from.set_active(0) # Clear 'from units' combo box
+            self.combo_to.set_active(0) # Clear 'to units' combo box
             self.quantity = 0
-        if active == 1:
-            self.unit_from.set_model(self.temperature_units_list)
-            self.unit_to.set_model(self.temperature_units_list)
+        if active == 1: # Temperature selected
+            self.combo_from.set_model(self.temperature_units_list)
+            self.combo_to.set_model(self.temperature_units_list)
+            self.combo_from.set_active(0) # Clear 'from units' combo box
+            self.combo_to.set_active(0) # Clear 'to units' combo box
             self.quantity = 1
 
+    # From unit changed
     def on_from_changed(self, widget):
         model = widget.get_model()
         active = widget.get_active()
         option = model[active][0]
-        self.input.set_text('')
         self.unitFrom = option
+        input_text = self.input.get_text()
+        self.input.set_text('') # So that on_input_changed is called
+        self.input.set_text(input_text)
 
+    # To unit changed
     def on_to_changed(self, widget):
         model = widget.get_model()
         active = widget.get_active()
         option = model[active][0]
-        self.input.set_text('')
         self.unitTo = option
+        input_text = self.input.get_text()
+        self.input.set_text('') # So that on_input_changed is called
+        self.input.set_text(input_text)
 
+    # Input changed
     def on_input_changed(self, widget):
         input = widget.get_text()
-        if (input == ''):
+        if (input == ''): # Input is empty
             self.out.set_text('')
-        if (input.isdigit()):
+        if (input.isdigit()): # Input is a number
+            # Volume conversion
             if (self.quantity == 0):
-                if (self.unitFrom == self.unitTo):
+                if (self.unitFrom == self.unitTo): # Same units
                     self.out.set_text(input)
                 if (self.unitFrom == 1 and self.unitTo == 2): # mm3 to cm3
                     self.out.set_text(str(int(input) / 1000))
@@ -143,8 +159,9 @@ class App:
                     self.out.set_text(str(int(input) * 1000000))
                 if (self.unitFrom == 3 and self.unitTo == 2): # L to cm3
                     self.out.set_text(str(int(input) * 1000))
+            # Temperature conversion
             if (self.quantity == 1):
-                if (self.unitFrom == self.unitTo):
+                if (self.unitFrom == self.unitTo): # Same units
                     self.out.set_text(input)
                 if (self.unitFrom == 1 and self.unitTo == 2): # Celsius to Farenheint
                     self.out.set_text(str(int(input) * 9 / 5 + 32))

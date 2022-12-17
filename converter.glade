@@ -40,10 +40,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBox" id="combo1">
+          <object class="GtkComboBox" id="combo_qty">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <signal name="changed" handler="on_combo1_changed" swapped="no"/>
+            <signal name="changed" handler="on_qty_changed" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
